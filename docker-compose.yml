@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Frontend - AlgaMoney UI
+  algamoney-ui:
+    container_name: algamoney-ui
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    image: algamoney-ui:latest
+    ports:
+      - "4200:80"
+    environment:
+      - ENVIRONMENT=production
+      # Descomente e configure se precisar de variáveis de ambiente
+      # - API_URL=http://localhost:8080
+    restart: unless-stopped
+    networks:
+      - algamoney-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.algamoney.description=AlgaMoney UI - Angular 18"
+      - "com.algamoney.version=18.2.0"
+
+  # Nginx Reverse Proxy (opcional - para ambiente mais complexo)
+  # nginx-proxy:
+  #   container_name: nginx-proxy
+  #   image: nginx:1.25-alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./docker/nginx/proxy.conf:/etc/nginx/nginx.conf:ro
+  #     - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+  #   depends_on:
+  #     - algamoney-ui
+  #   restart: unless-stopped
+  #   networks:
+  #     - algamoney-network
+
+networks:
+  algamoney-network:
+    driver: bridge
+    name: algamoney-network
+
+# Volumes (se necessário para persistência de dados)
+# volumes:
+#   nginx-logs:
+#     driver: local
