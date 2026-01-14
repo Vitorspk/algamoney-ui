@@ -33,7 +33,17 @@ export class AuthService {
   }
 
   login(usuario: string, senha: string): Promise<void> {
-    const credentials = btoa(`${environment.oauthClientId}:${environment.oauthClientSecret}`);
+    // SECURITY WARNING: Client secret should NOT be in frontend code
+    // TODO: Migrate to BFF Pattern or OAuth PKCE Flow
+    // Current implementation is TEMPORARY and INSECURE for production
+    const clientSecret = environment.oauthClientSecret || '';
+
+    if (!clientSecret) {
+      console.warn('⚠️ SECURITY: OAuth client secret not configured. This app requires BFF or PKCE implementation.');
+      return Promise.reject('Autenticação não configurada corretamente. Contate o administrador.');
+    }
+
+    const credentials = btoa(`${environment.oauthClientId}:${clientSecret}`);
     const headers = new HttpHeaders()
       .append('Content-Type', 'application/x-www-form-urlencoded')
       .append('Authorization', `Basic ${credentials}`);
@@ -60,7 +70,16 @@ export class AuthService {
   }
 
   obterNovoAccessToken(): Promise<void> {
-    const credentials = btoa(`${environment.oauthClientId}:${environment.oauthClientSecret}`);
+    // SECURITY WARNING: Client secret should NOT be in frontend code
+    // TODO: Migrate to BFF Pattern or OAuth PKCE Flow
+    const clientSecret = environment.oauthClientSecret || '';
+
+    if (!clientSecret) {
+      console.warn('⚠️ SECURITY: OAuth client secret not configured.');
+      return Promise.resolve(); // Silently fail, user will need to re-login
+    }
+
+    const credentials = btoa(`${environment.oauthClientId}:${clientSecret}`);
     const headers = new HttpHeaders()
       .append('Content-Type', 'application/x-www-form-urlencoded')
       .append('Authorization', `Basic ${credentials}`);

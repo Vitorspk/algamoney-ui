@@ -1,10 +1,25 @@
 # Guia de Segurança - AlgaMoney UI
 
-## ⚠️ IMPORTANTE: OAuth Client Secret
+## 🔴 CRÍTICO: Ação Imediata Necessária
+
+### ⚠️ VULNERABILIDADE ATIVA: OAuth Client Secret Exposto
+
+**STATUS**: O código atual usa client secret no frontend (INSEGURO)
+**RISCO**: Alto - Credenciais podem ser extraídas por qualquer usuário
+**PRAZO**: Implementar solução antes de produção
 
 ### Problema de Segurança Crítico
 
-O `oauthClientSecret` **NUNCA** deve estar no código frontend. Todo código JavaScript é visível ao usuário final, tornando qualquer "secret" exposto.
+O `oauthClientSecret` está sendo usado no `auth.service.ts` (linhas 36, 63). Todo código JavaScript é visível ao usuário final através de:
+- DevTools do navegador
+- Código-fonte da página
+- Arquivos JavaScript do bundle
+
+**Impacto**:
+- Atacantes podem extrair o secret
+- Usar o secret para autenticar como a aplicação
+- Comprometer contas de usuários
+- Bypass de controles de segurança
 
 ### Solução Recomendada
 
