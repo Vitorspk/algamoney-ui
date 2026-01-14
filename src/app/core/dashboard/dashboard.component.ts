@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
-import { DashboardService } from './dashboard.service';
+import { DashboardService, LancamentoPorCategoria, LancamentoPorDia } from './dashboard.service';
 import { ErrorHandlerService } from './../error-handler.service';
 import { LogoutService } from './../../seguranca/logout.service';
 
@@ -44,44 +44,43 @@ export class DashboardComponent implements OnInit {
     this.carregando = true;
     this.cdr.markForCheck();
 
-    this.dashboardService.lancamentosPorCategoria()
-      .then(dados => {
-        // A API retorna um array com todos os lançamentos
-        // Vamos calcular o total somando todos
-        this.receitaTotal = this.calcularTotal(dados.filter((d: any) => d.tipo === 'RECEITA'));
-        this.despesaTotal = this.calcularTotal(dados.filter((d: any) => d.tipo === 'DESPESA'));
-        this.saldo = this.receitaTotal - this.despesaTotal;
+    // Carrega ambas as chamadas em paralelo e só remove loading quando ambas terminarem
+    Promise.all([
+      this.dashboardService.lancamentosPorCategoria()
+        .then(dados => {
+          // A API retorna um array com todos os lançamentos
+          // Vamos calcular o total somando todos
+          this.receitaTotal = this.calcularTotal(dados.filter((d: any) => d.tipo === 'RECEITA'));
+          this.despesaTotal = this.calcularTotal(dados.filter((d: any) => d.tipo === 'DESPESA'));
+          this.saldo = this.receitaTotal - this.despesaTotal;
 
-        this.configurarGraficoPizza(dados);
-        this.cdr.markForCheck();
-      })
-      .catch(erro => {
-        this.errorHandler.handle(erro);
-        this.cdr.markForCheck();
-      })
+          this.configurarGraficoPizza(dados);
+        })
+        .catch(erro => {
+          this.errorHandler.handle(erro);
+        }),
+
+      this.dashboardService.lancamentosPorDia()
+        .then(dados => {
+          this.configurarGraficoLinha(dados);
+        })
+        .catch(erro => {
+          this.errorHandler.handle(erro);
+        })
+    ])
       .finally(() => {
         this.carregando = false;
         this.cdr.markForCheck();
       });
-
-    this.dashboardService.lancamentosPorDia()
-      .then(dados => {
-        this.configurarGraficoLinha(dados);
-        this.cdr.markForCheck();
-      })
-      .catch(erro => {
-        this.errorHandler.handle(erro);
-        this.cdr.markForCheck();
-      });
   }
 
-  private calcularTotal(dados: any[]): number {
+  private calcularTotal(dados: LancamentoPorCategoria[]): number {
     return dados.reduce((total, item) => total + item.total, 0);
   }
 
-  configurarGraficoPizza(dados: any[] = []) {
-    const receitas = dados.filter((d: any) => d.tipo === 'RECEITA');
-    const despesas = dados.filter((d: any) => d.tipo === 'DESPESA');
+  configurarGraficoPizza(dados: LancamentoPorCategoria[] = []) {
+    const receitas = dados.filter(d => d.tipo === 'RECEITA');
+    const despesas = dados.filter(d => d.tipo === 'DESPESA');
 
     this.pieChartData = {
       labels: ['Receitas', 'Despesas'],
@@ -98,16 +97,16 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  configurarGraficoLinha(dados: any[] = []) {
+  configurarGraficoLinha(dados: LancamentoPorDia[] = []) {
     const diasDoMes = this.configurarDiasMes();
 
     const receitasPorDia = this.totaisPorDia(
-      dados.filter((d: any) => d.tipo === 'RECEITA'),
+      dados.filter(d => d.tipo === 'RECEITA'),
       diasDoMes
     );
 
     const despesasPorDia = this.totaisPorDia(
-      dados.filter((d: any) => d.tipo === 'DESPESA'),
+      dados.filter(d => d.tipo === 'DESPESA'),
       diasDoMes
     );
 
@@ -146,21 +145,18 @@ export class DashboardComponent implements OnInit {
     return dias;
   }
 
-  private totaisPorDia(dados: any[], diasDoMes: number[]): number[] {
-    const totais: number[] = [];
-    for (const dia of diasDoMes) {
-      let total = 0;
+  private totaisPorDia(dados: LancamentoPorDia[], diasDoMes: number[]): number[] {
+    // Otimização: usa Map para O(n) em vez de loop aninhado O(n²)
+    const totaisPorDiaMap = new Map<number, number>();
 
-      for (const dado of dados) {
-        const diaLancamento = new Date(dado.dia).getDate();
-        if (diaLancamento === dia) {
-          total = dado.total;
-        }
-      }
-
-      totais.push(total);
+    // Primeiro passa pelos dados e armazena no Map (O(n))
+    for (const dado of dados) {
+      const diaLancamento = new Date(dado.dia).getDate();
+      totaisPorDiaMap.set(diaLancamento, dado.total);
     }
-    return totais;
+
+    // Depois cria o array de totais consultando o Map (O(n))
+    return diasDoMes.map(dia => totaisPorDiaMap.get(dia) || 0);
   }
 
   logout() {

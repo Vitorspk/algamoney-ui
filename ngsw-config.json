@@ -32,40 +32,39 @@
     {
       "name": "api-lancamentos",
       "urls": [
-        "http://localhost:8080/lancamentos**",
-        "https://*/lancamentos**"
+        "/lancamentos**"
       ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "1h",
-        "timeout": "5s"
+        "maxAge": "30m",
+        "timeout": "10s"
       }
     },
     {
       "name": "api-pessoas",
       "urls": [
-        "http://localhost:8080/pessoas**",
-        "https://*/pessoas**"
+        "/pessoas**"
       ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "1h",
-        "timeout": "5s"
+        "maxAge": "30m",
+        "timeout": "10s"
       }
     },
     {
       "name": "api-dashboard",
       "urls": [
-        "http://localhost:8080/lancamentos/estatisticas**",
-        "https://*/lancamentos/estatisticas**"
+        "/lancamentos/estatisticas**"
       ],
       "cacheConfig": {
         "strategy": "performance",
         "maxSize": 50,
-        "maxAge": "30m"
+        "maxAge": "15m"
       }
     }
   ]
+}
+
 }

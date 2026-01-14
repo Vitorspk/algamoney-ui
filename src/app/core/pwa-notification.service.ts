@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, map } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
@@ -12,9 +12,12 @@ import { MessageService } from 'primeng/api';
 @Injectable({
   providedIn: 'root'
 })
-export class PwaNotificationService {
+export class PwaNotificationService implements OnDestroy {
 
   private isOnline = true;
+  private updateCheckInterval: any;
+  private onlineHandler: () => void;
+  private offlineHandler: () => void;
 
   constructor(
     private swUpdate: SwUpdate,
@@ -22,6 +25,24 @@ export class PwaNotificationService {
   ) {
     this.checkForUpdates();
     this.monitorConnectionStatus();
+  }
+
+  /**
+   * Cleanup ao destruir o serviço
+   */
+  ngOnDestroy(): void {
+    // Limpa interval de checagem de atualizações
+    if (this.updateCheckInterval) {
+      clearInterval(this.updateCheckInterval);
+    }
+
+    // Remove event listeners
+    if (this.onlineHandler) {
+      window.removeEventListener('online', this.onlineHandler);
+    }
+    if (this.offlineHandler) {
+      window.removeEventListener('offline', this.offlineHandler);
+    }
   }
 
   /**
@@ -47,12 +68,16 @@ export class PwaNotificationService {
         this.notifyUpdateAvailable();
       });
 
-    // Verifica atualizações a cada 6 horas
+    // Verifica atualizações a cada 6 horas com error handling
     if (this.swUpdate.isEnabled) {
-      setInterval(() => {
-        this.swUpdate.checkForUpdate().then(() => {
-          console.log('Verificação de atualização concluída');
-        });
+      this.updateCheckInterval = setInterval(() => {
+        this.swUpdate.checkForUpdate()
+          .then(() => {
+            console.log('Verificação de atualização concluída');
+          })
+          .catch(err => {
+            console.error('Erro ao verificar atualizações:', err);
+          });
       }, 6 * 60 * 60 * 1000);
     }
   }
@@ -96,7 +121,8 @@ export class PwaNotificationService {
    * Monitora o status de conexão com a internet
    */
   private monitorConnectionStatus(): void {
-    window.addEventListener('online', () => {
+    // Armazena os handlers para poder removê-los no ngOnDestroy
+    this.onlineHandler = () => {
       this.isOnline = true;
       this.messageService.add({
         severity: 'success',
@@ -104,9 +130,9 @@ export class PwaNotificationService {
         detail: 'Conexão com a internet restabelecida',
         life: 3000
       });
-    });
+    };
 
-    window.addEventListener('offline', () => {
+    this.offlineHandler = () => {
       this.isOnline = false;
       this.messageService.add({
         severity: 'warn',
@@ -114,7 +140,10 @@ export class PwaNotificationService {
         detail: 'Você está trabalhando em modo offline',
         sticky: true
       });
-    });
+    };
+
+    window.addEventListener('online', this.onlineHandler);
+    window.addEventListener('offline', this.offlineHandler);
   }
 
   /**

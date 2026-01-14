@@ -5,6 +5,7 @@ import { firstValueFrom, catchError, of } from 'rxjs';
 import { environment } from './../../../environments/environment';
 
 export interface LancamentoPorCategoria {
+  tipo: 'RECEITA' | 'DESPESA';
   categoria: { nome: string };
   total: number;
 }

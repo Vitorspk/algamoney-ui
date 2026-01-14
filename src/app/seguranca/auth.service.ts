@@ -33,9 +33,10 @@ export class AuthService {
   }
 
   login(usuario: string, senha: string): Promise<void> {
+    const credentials = btoa(`${environment.oauthClientId}:${environment.oauthClientSecret}`);
     const headers = new HttpHeaders()
       .append('Content-Type', 'application/x-www-form-urlencoded')
-      .append('Authorization', 'Basic YW5ndWxhcjpAbmd1bEByMA==');
+      .append('Authorization', `Basic ${credentials}`);
 
     const body = `username=${usuario}&password=${senha}&grant_type=password`;
 

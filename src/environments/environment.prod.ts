@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080'
+  apiUrl: 'https://api.algamoney.com', // TODO: Replace with your production API URL
+  oauthClientId: 'angular',
+  oauthClientSecret: '@ngu1@rM' // TODO: Use environment variables in production
 };
