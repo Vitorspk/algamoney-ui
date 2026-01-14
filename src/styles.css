@@ -181,6 +181,20 @@ label {
   padding: var(--spacing-lg) !important;
 }
 
+/* Tabela moderna com gradiente no header - Opção A: Gradiente roxo moderno */
+.p-datatable .p-datatable-thead > tr > th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border: none !important;
+  padding: 1rem !important;
+  border-bottom: none !important;
+}
+
+/* Opção B: Se preferir um visual mais sóbrio, comente o bloco acima e descomente este:
 .p-datatable .p-datatable-thead > tr > th {
   background: #f8fafc !important;
   color: #475569 !important;
@@ -192,6 +206,7 @@ label {
   padding: 1rem !important;
   border-bottom: 2px solid #e2e8f0 !important;
 }
+*/
 
 .p-datatable .p-datatable-tbody > tr {
   transition: all 0.2s ease !important;
