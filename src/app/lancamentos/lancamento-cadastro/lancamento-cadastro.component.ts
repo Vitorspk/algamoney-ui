@@ -25,6 +25,8 @@ export class LancamentoCadastroComponent implements OnInit {
   categorias = [];
   pessoas = [];
   lancamento = new Lancamento();
+  salvando = false;
+  carregandoDados = false;
 
   constructor(
     private categoriaService: CategoriaService,
@@ -55,12 +57,14 @@ export class LancamentoCadastroComponent implements OnInit {
   }
 
   carregarLancamento(codigo: number) {
+    this.carregandoDados = true;
     this.lancamentoService.buscarPorCodigo(codigo)
       .then(lancamento => {
         this.lancamento = lancamento;
         this.atualizarTituloEdicao();
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.carregandoDados = false);
   }
 
   salvar(form: FormControl) {
@@ -72,6 +76,7 @@ export class LancamentoCadastroComponent implements OnInit {
   }
 
   adicionarLancamento(form: FormControl) {
+    this.salvando = true;
     this.lancamentoService.adicionar(this.lancamento)
       .then(lancamentoAdicionado => {
         this.messageService.add({
@@ -84,10 +89,12 @@ export class LancamentoCadastroComponent implements OnInit {
         // this.lancamento = new Lancamento();
         this.router.navigate(['/lancamentos', lancamentoAdicionado.codigo]);
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.salvando = false);
   }
 
   atualizarLancamento(form: FormControl) {
+    this.salvando = true;
     this.lancamentoService.atualizar(this.lancamento)
       .then(lancamento => {
         this.lancamento = lancamento;
@@ -99,7 +106,8 @@ export class LancamentoCadastroComponent implements OnInit {
         });
         this.atualizarTituloEdicao();
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.salvando = false);
   }
 
   carregarCategorias() {

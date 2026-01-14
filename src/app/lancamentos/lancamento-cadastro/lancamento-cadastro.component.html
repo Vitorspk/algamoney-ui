@@ -1,82 +1,148 @@
 <div class="container">
+  <div *ngIf="carregandoDados" class="loading-overlay">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #3b82f6;"></i>
+    <p>Carregando dados...</p>
+  </div>
+
   <form #f="ngForm" autocomplete="off" (ngSubmit)="salvar(f)">
 
     <div class="ui-g">
       <div class="ui-g-12">
-        <h1>{{ editando ? 'Edição de' : 'Novo' }} Lançamento</h1>
+        <h1 class="page-title">{{ editando ? 'Edição de' : 'Novo' }} Lançamento</h1>
       </div>
 
-      <div class="ui-g-12">
-        <p-selectButton name="tipo" [options]="tipos"
-          [(ngModel)]="lancamento.tipo"
-          #tipo></p-selectButton>
+      <!-- Tipo de Lançamento -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-tag"></i>
+          <span>Tipo de Lançamento</span>
+        </div>
+        <div class="section-content">
+          <p-selectButton name="tipo" [options]="tipos"
+            [(ngModel)]="lancamento.tipo"
+            #tipo></p-selectButton>
+        </div>
       </div>
 
-      <div class="ui-g-6 ui-md-3 ui-fluid">
-        <label>Vencimento</label>
-        <p-calendar name="vencimento" dateFormat="dd/mm/yy"
-          [inline]="false" [readonlyInput]="false" [showIcon]="false"
-          [(ngModel)]="lancamento.dataVencimento"
-          #vencimento="ngModel" required></p-calendar>
+      <!-- Datas -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-calendar"></i>
+          <span>Datas</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>Vencimento</label>
+              <p-calendar name="vencimento" dateFormat="dd/mm/yy"
+                [inline]="false" [readonlyInput]="false" [showIcon]="true"
+                [(ngModel)]="lancamento.dataVencimento"
+                #vencimento="ngModel" required></p-calendar>
 
-        <app-message [control]="vencimento" error="required"
-          text="Informe uma data de vencimento"></app-message>
+              <app-message [control]="vencimento" error="required"
+                text="Informe uma data de vencimento"></app-message>
+            </div>
+
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>{{ tipo.value === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}</label>
+              <p-calendar dateFormat="dd/mm/yy" name="dataPagamento"
+                [showIcon]="true"
+                [(ngModel)]="lancamento.dataPagamento"></p-calendar>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-6 ui-md-3 ui-fluid">
-        <label>{{ tipo.value === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}</label>
-        <p-calendar dateFormat="dd/mm/yy" name="dataPagamento"
-          [(ngModel)]="lancamento.dataPagamento"></p-calendar>
+      <!-- Informações Básicas -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-info-circle"></i>
+          <span>Informações Básicas</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-9 ui-fluid">
+              <label>Descrição</label>
+              <input pInputText type="text" name="descricao"
+                [(ngModel)]="lancamento.descricao"
+                #descricao="ngModel" required minlength="5">
+
+              <app-message [control]="descricao" error="required"
+                text="Informe a descrição"></app-message>
+              <app-message [control]="descricao" error="minlength"
+                text="Mínimo de {{ descricao.errors?.minlength?.requiredLength }} caracteres"></app-message>
+            </div>
+
+            <div class="ui-g-12 ui-md-3 ui-fluid">
+              <label>Valor</label>
+              <input pInputText type="text" name="valor" placeholder="0,00"
+                currencyMask
+                [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, nullable: false }"
+                [(ngModel)]="lancamento.valor"
+                required>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-12 ui-md-9 ui-fluid">
-        <label>Descrição</label>
-        <input pInputText type="text" name="descricao"
-          [(ngModel)]="lancamento.descricao"
-          #descricao="ngModel" required minlength="5">
+      <!-- Categoria e Pessoa -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-users"></i>
+          <span>Categoria e Pessoa</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>Categoria</label>
+              <p-dropdown name="categoria" [options]="categorias"
+                placeholder="Selecione"
+                [(ngModel)]="lancamento.categoria.codigo"
+                required></p-dropdown>
+            </div>
 
-        <app-message [control]="descricao" error="required"
-          text="Informe a descrição"></app-message>
-        <app-message [control]="descricao" error="minlength"
-          text="Mínimo de {{ descricao.errors?.minlength?.requiredLength }} caracteres"></app-message>
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>Pessoa</label>
+              <p-dropdown name="pessoa" [options]="pessoas" placeholder="Selecione"
+                [filter]="true"
+                [(ngModel)]="lancamento.pessoa.codigo"
+                required></p-dropdown>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-12 ui-md-3 ui-fluid">
-        <label>Valor</label>
-        <input pInputText type="text" name="valor" placeholder="0,00"
-          currencyMask
-          [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, nullable: false }"
-          [(ngModel)]="lancamento.valor"
-          required>
+      <!-- Observação -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-comment"></i>
+          <span>Observação</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-fluid">
+              <label>Observação (opcional)</label>
+              <textarea pInputTextarea rows="3" name="observacao"
+                [(ngModel)]="lancamento.observacao"></textarea>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-12 ui-md-6 ui-fluid">
-        <label>Categoria</label>
-        <p-dropdown name="categoria" [options]="categorias"
-          placeholder="Selecione"
-          [(ngModel)]="lancamento.categoria.codigo"
-          required></p-dropdown>
-      </div>
-
-      <div class="ui-g-12 ui-md-6 ui-fluid">
-        <label>Pessoa</label>
-        <p-dropdown name="pessoa" [options]="pessoas" placeholder="Selecione"
-          [filter]="true"
-          [(ngModel)]="lancamento.pessoa.codigo"
-          required></p-dropdown>
-      </div>
-
-      <div class="ui-g-12 ui-fluid">
-        <label>Observação</label>
-        <textarea pInputTextarea rows="3" name="observacao"
-          [(ngModel)]="lancamento.observacao"></textarea>
-      </div>
-
-      <div class="ui-g-12">
-        <button pButton type="submit" label="Salvar" [disabled]="f.invalid"></button>
-        <button pButton type="button" label="Novo" class="ui-button-info"
+      <!-- Botões de Ação -->
+      <div class="ui-g-12 action-buttons">
+        <button pButton type="submit" class="btn-save"
+          [label]="salvando ? 'Salvando...' : 'Salvar'"
+          [icon]="salvando ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+          [disabled]="f.invalid || salvando"></button>
+        <button pButton type="button" label="Novo" class="btn-new"
+          icon="pi pi-plus"
+          [disabled]="salvando"
           (click)="novo(f)"></button>
-        <a routerLink="/lancamentos">Voltar para a pesquisa</a>
+        <a routerLink="/lancamentos" class="btn-back">
+          <i class="pi pi-arrow-left"></i>
+          Voltar para a pesquisa
+        </a>
       </div>
     </div>
 

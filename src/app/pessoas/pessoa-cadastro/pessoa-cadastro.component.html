@@ -1,95 +1,135 @@
 <div class="container">
+  <div *ngIf="carregandoDados" class="loading-overlay">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #3b82f6;"></i>
+    <p>Carregando dados...</p>
+  </div>
+
   <form #f="ngForm" autocomplete="off" (ngSubmit)="salvar(f)">
 
     <div class="ui-g">
       <div class="ui-g-12">
-        <h1>Nova Pessoa</h1>
+        <h1 class="page-title">{{ editando ? 'Edição de' : 'Nova' }} Pessoa</h1>
       </div>
 
-      <div class="ui-g-12 ui-fluid">
-        <label>Nome</label>
-        <input pInputText type="text" name="nome"
-          [(ngModel)]="pessoa.nome"
-          #nome="ngModel" required minlength="5">
+      <!-- Informações Básicas -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-user"></i>
+          <span>Informações Básicas</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <div class="ui-g-12 ui-fluid">
+              <label>Nome</label>
+              <input pInputText type="text" name="nome"
+                [(ngModel)]="pessoa.nome"
+                #nome="ngModel" required minlength="5">
 
-        <app-message [control]="nome" error="required"
-          text="Informe o nome"></app-message>
-        <app-message [control]="nome" error="minlength"
-          text="Mínimo de {{ nome.errors?.minlength?.requiredLength }} caracteres"></app-message>
+              <app-message [control]="nome" error="required"
+                text="Informe o nome"></app-message>
+              <app-message [control]="nome" error="minlength"
+                text="Mínimo de {{ nome.errors?.minlength?.requiredLength }} caracteres"></app-message>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-12 ui-md-9 ui-fluid">
-        <label>Logradouro</label>
-        <input pInputText type="text" name="logradouro"
-          [(ngModel)]="pessoa.endereco.logradouro"
-          #logradouro="ngModel" required>
+      <!-- Endereço -->
+      <div class="ui-g-12 form-section">
+        <div class="section-header">
+          <i class="pi pi-map-marker"></i>
+          <span>Endereço</span>
+        </div>
+        <div class="section-content">
+          <div class="ui-g">
+            <!-- Logradouro e Número -->
+            <div class="ui-g-12 ui-md-9 ui-fluid">
+              <label>Logradouro</label>
+              <input pInputText type="text" name="logradouro"
+                [(ngModel)]="pessoa.endereco.logradouro"
+                #logradouro="ngModel" required>
 
-        <app-message [control]="logradouro" error="required"
-          text="Informe o logradouro"></app-message>
+              <app-message [control]="logradouro" error="required"
+                text="Informe o logradouro"></app-message>
+            </div>
+
+            <div class="ui-g-12 ui-md-3 ui-fluid">
+              <label>Número</label>
+              <input pInputText type="text" name="numero"
+                [(ngModel)]="pessoa.endereco.numero"
+                #numero="ngModel" required>
+
+              <app-message [control]="numero" error="required"
+                text="Informe o número"></app-message>
+            </div>
+
+            <!-- Complemento e Bairro -->
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>Complemento</label>
+              <input pInputText type="text" name="complemento"
+              [(ngModel)]="pessoa.endereco.complemento">
+            </div>
+
+            <div class="ui-g-12 ui-md-6 ui-fluid">
+              <label>Bairro</label>
+              <input pInputText type="text" name="bairro"
+                [(ngModel)]="pessoa.endereco.bairro"
+                #bairro="ngModel" required>
+
+              <app-message [control]="bairro" error="required"
+                text="Informe o bairro"></app-message>
+            </div>
+
+            <!-- CEP -->
+            <div class="ui-g-12 ui-md-4 ui-fluid">
+              <label>CEP</label>
+              <p-inputMask name="cep" mask="99.999-999"
+                [(ngModel)]="pessoa.endereco.cep"
+                #cep="ngModel" required></p-inputMask>
+
+              <app-message [control]="cep" error="required"
+                text="Informe o CEP"></app-message>
+            </div>
+
+            <!-- Cidade -->
+            <div class="ui-g-12 ui-md-4 ui-fluid">
+              <label>Cidade</label>
+              <input pInputText type="text" name="cidade"
+                [(ngModel)]="pessoa.endereco.cidade"
+                #cidade="ngModel" required>
+
+                <app-message [control]="cidade" error="required"
+                text="Informe a cidade"></app-message>
+            </div>
+
+            <!-- Estado -->
+            <div class="ui-g-12 ui-md-4 ui-fluid">
+              <label>Estado</label>
+              <input pInputText type="text" name="estado"
+                [(ngModel)]="pessoa.endereco.estado"
+                #estado="ngModel" required>
+
+                <app-message [control]="estado" error="required"
+                text="Informe o estado"></app-message>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="ui-g-12 ui-md-3 ui-fluid">
-        <label>Número</label>
-        <input pInputText type="text" name="numero"
-          [(ngModel)]="pessoa.endereco.numero"
-          #numero="ngModel" required>
-
-        <app-message [control]="numero" error="required"
-          text="Informe o número"></app-message>
-      </div>
-
-      <div class="ui-g-12 ui-md-4 ui-fluid">
-        <label>Complemento</label>
-        <input pInputText type="text" name="complemento"
-        [(ngModel)]="pessoa.endereco.complemento">
-      </div>
-
-      <div class="ui-g-12 ui-md-4 ui-fluid">
-        <label>Bairro</label>
-        <input pInputText type="text" name="bairro"
-          [(ngModel)]="pessoa.endereco.bairro"
-          #bairro="ngModel" required>
-
-        <app-message [control]="bairro" error="required"
-          text="Informe o bairro"></app-message>
-      </div>
-
-      <div class="ui-g-12 ui-md-4 ui-fluid">
-        <label>CEP</label>
-        <p-inputMask name="cep" mask="99.999-999"
-          [(ngModel)]="pessoa.endereco.cep"
-          #cep="ngModel" required></p-inputMask>
-
-        <app-message [control]="cep" error="required"
-          text="Informe o CEP"></app-message>
-      </div>
-
-      <div class="ui-g-12 ui-md-6 ui-fluid">
-        <label>Cidade</label>
-        <input pInputText type="text" name="cidade"
-          [(ngModel)]="pessoa.endereco.cidade"
-          #cidade="ngModel" required>
-
-          <app-message [control]="cidade" error="required"
-          text="Informe a cidade"></app-message>
-      </div>
-
-      <div class="ui-g-12 ui-md-6 ui-fluid">
-        <label>Estado</label>
-        <input pInputText type="text" name="estado"
-          [(ngModel)]="pessoa.endereco.estado"
-          #estado="ngModel" required>
-
-          <app-message [control]="estado" error="required"
-          text="Informe o estado"></app-message>
-      </div>
-
-      <div class="ui-g-12">
-        <button pButton type="submit" label="Salvar" [disabled]="f.invalid"></button>
-        <button pButton type="button" label="Nova" class="ui-button-info"
+      <!-- Botões de Ação -->
+      <div class="ui-g-12 action-buttons">
+        <button pButton type="submit" class="btn-save"
+          [label]="salvando ? 'Salvando...' : 'Salvar'"
+          [icon]="salvando ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+          [disabled]="f.invalid || salvando"></button>
+        <button pButton type="button" label="Nova" class="btn-new"
+          icon="pi pi-plus"
+          [disabled]="salvando"
           (click)="nova(f)"></button>
-
-        <a routerLink="/pessoas">Voltar para a pesquisa</a>
+        <a routerLink="/pessoas" class="btn-back">
+          <i class="pi pi-arrow-left"></i>
+          Voltar para a pesquisa
+        </a>
       </div>
     </div>
 

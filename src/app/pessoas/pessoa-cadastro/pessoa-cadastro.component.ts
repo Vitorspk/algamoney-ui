@@ -17,6 +17,8 @@ import { Pessoa } from './../../core/model';
 export class PessoaCadastroComponent implements OnInit {
 
   pessoa = new Pessoa();
+  salvando = false;
+  carregandoDados = false;
 
   constructor(
     private pessoaService: PessoaService,
@@ -42,12 +44,14 @@ export class PessoaCadastroComponent implements OnInit {
   }
 
   carregarPessoa(codigo: number) {
+    this.carregandoDados = true;
     this.pessoaService.buscarPorCodigo(codigo)
       .then(pessoa => {
         this.pessoa = pessoa;
         this.atualizarTituloEdicao();
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.carregandoDados = false);
   }
 
   salvar(form: FormControl) {
@@ -59,15 +63,18 @@ export class PessoaCadastroComponent implements OnInit {
   }
 
   adicionarPessoa(form: FormControl) {
+    this.salvando = true;
     this.pessoaService.adicionar(this.pessoa)
       .then(pessoaAdicionada => {
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pessoa adicionada com sucesso!' });
         this.router.navigate(['/pessoas', pessoaAdicionada.codigo]);
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.salvando = false);
   }
 
   atualizarPessoa(form: FormControl) {
+    this.salvando = true;
     this.pessoaService.atualizar(this.pessoa)
       .then(pessoa => {
         this.pessoa = pessoa;
@@ -75,7 +82,8 @@ export class PessoaCadastroComponent implements OnInit {
         this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Pessoa alterada com sucesso!' });
         this.atualizarTituloEdicao();
       })
-      .catch(erro => this.errorHandler.handle(erro));
+      .catch(erro => this.errorHandler.handle(erro))
+      .finally(() => this.salvando = false);
   }
 
   nova(form: FormControl) {

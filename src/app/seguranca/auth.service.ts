@@ -15,8 +15,21 @@ export class AuthService {
     private http: HttpClient
   ) {
     this.jwtHelper = new JwtHelperService();
+    this.verificarSessao();
     this.carregarToken();
     this.oauthTokenUrl = `${environment.apiUrl}/oauth/token`;
+  }
+
+  private verificarSessao() {
+    // Gera um ID único para esta sessão do navegador (apenas na memória, não persiste)
+    const sessionId = sessionStorage.getItem('app_session_id');
+
+    if (!sessionId) {
+      // Nova sessão - limpa qualquer token persistente
+      this.limparAccessToken();
+      // Cria novo ID de sessão
+      sessionStorage.setItem('app_session_id', Date.now().toString());
+    }
   }
 
   login(usuario: string, senha: string): Promise<void> {
@@ -70,13 +83,37 @@ export class AuthService {
 
   limparAccessToken() {
     localStorage.removeItem('token');
+    localStorage.removeItem('token_created_at');
     this.jwtPayload = null;
   }
 
   isAccessTokenInvalido() {
     const token = localStorage.getItem('token');
 
-    return !token || this.jwtHelper.isTokenExpired(token);
+    if (!token) {
+      return true;
+    }
+
+    // Verifica se o token está expirado pela biblioteca JWT
+    if (this.jwtHelper.isTokenExpired(token)) {
+      return true;
+    }
+
+    // Verifica se o token foi criado há mais de 24 horas
+    // Isso força o usuário a fazer login novamente após reiniciar o container
+    const tokenCreatedAt = localStorage.getItem('token_created_at');
+    if (tokenCreatedAt) {
+      const createdTime = parseInt(tokenCreatedAt, 10);
+      const now = new Date().getTime();
+      const hoursSinceCreated = (now - createdTime) / (1000 * 60 * 60);
+
+      // Se passou mais de 24 horas, considera o token inválido
+      if (hoursSinceCreated > 24) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   temPermissao(permissao: string) {
@@ -96,6 +133,8 @@ export class AuthService {
   private armazenarToken(token: string) {
     this.jwtPayload = this.jwtHelper.decodeToken(token);
     localStorage.setItem('token', token);
+    // Armazena o timestamp de criação do token
+    localStorage.setItem('token_created_at', new Date().getTime().toString());
   }
 
   private carregarToken() {
