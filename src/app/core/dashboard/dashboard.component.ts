@@ -100,7 +100,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (this.destroyed) return; // Previne atualizações após destruição do componente
         this.apiError = true;
         this.errorMessage = 'Erro ao carregar dados do dashboard. Tente novamente mais tarde.';
-        this.errorHandler.handle(erro);
+        // Nota: Não chama errorHandler.handle() aqui pois já estamos tratando o erro no componente
+        // Isso evita duplicar o erro com popup quando o endpoint não existe
+        console.error('Erro ao carregar estatísticas do dashboard:', erro);
       })
       .finally(() => {
         if (this.destroyed) return; // Previne atualizações após destruição do componente
