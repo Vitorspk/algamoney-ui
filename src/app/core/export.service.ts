@@ -3,6 +3,11 @@ import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+// Limites de segurança para prevenir DoS
+const MAX_EXPORT_ROWS = 10000; // Máximo 10k linhas
+const MAX_CELL_LENGTH = 32767; // Limite do Excel para células
+const MAX_COLUMN_WIDTH = 100; // Largura máxima de coluna
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,20 +26,37 @@ export class ExportService {
     if (data.length === 0) {
       throw new Error('Não há dados para exportar');
     }
+    if (data.length > MAX_EXPORT_ROWS) {
+      throw new Error(`Limite de exportação excedido. Máximo: ${MAX_EXPORT_ROWS} linhas`);
+    }
     if (!fileName || fileName.trim() === '') {
       throw new Error('Nome do arquivo é obrigatório');
     }
 
     try {
-      const worksheet = XLSX.utils.json_to_sheet(data);
+      // Trunca células muito grandes para prevenir DoS
+      const sanitizedData = data.map(row => {
+        const sanitizedRow: any = {};
+        Object.keys(row).forEach(key => {
+          const value = row[key];
+          if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
+            sanitizedRow[key] = value.substring(0, MAX_CELL_LENGTH) + '...';
+          } else {
+            sanitizedRow[key] = value;
+          }
+        });
+        return sanitizedRow;
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(sanitizedData);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
-      // Ajustar largura das colunas automaticamente
-      const maxWidth = data.reduce((acc, row) => {
+      // Ajustar largura das colunas automaticamente com limite
+      const maxWidth = sanitizedData.reduce((acc, row) => {
         Object.keys(row).forEach(key => {
           const cellLength = row[key] ? row[key].toString().length : 10;
-          acc[key] = Math.max(acc[key] || 10, cellLength);
+          acc[key] = Math.max(acc[key] || 10, Math.min(cellLength, MAX_COLUMN_WIDTH));
         });
         return acc;
       }, {});
@@ -59,12 +81,29 @@ export class ExportService {
     if (data.length === 0) {
       throw new Error('Não há dados para exportar');
     }
+    if (data.length > MAX_EXPORT_ROWS) {
+      throw new Error(`Limite de exportação excedido. Máximo: ${MAX_EXPORT_ROWS} linhas`);
+    }
     if (!fileName || fileName.trim() === '') {
       throw new Error('Nome do arquivo é obrigatório');
     }
 
     try {
-      const worksheet = XLSX.utils.json_to_sheet(data);
+      // Sanitiza dados antes de exportar
+      const sanitizedData = data.map(row => {
+        const sanitizedRow: any = {};
+        Object.keys(row).forEach(key => {
+          const value = row[key];
+          if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
+            sanitizedRow[key] = value.substring(0, MAX_CELL_LENGTH) + '...';
+          } else {
+            sanitizedRow[key] = value;
+          }
+        });
+        return sanitizedRow;
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(sanitizedData);
       const csv = XLSX.utils.sheet_to_csv(worksheet);
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -105,6 +144,9 @@ export class ExportService {
     }
     if (data.length === 0) {
       throw new Error('Não há dados para exportar');
+    }
+    if (data.length > MAX_EXPORT_ROWS) {
+      throw new Error(`Limite de exportação excedido. Máximo: ${MAX_EXPORT_ROWS} linhas`);
     }
     if (!columns || !Array.isArray(columns) || columns.length === 0) {
       throw new Error('Colunas são obrigatórias para exportação PDF');

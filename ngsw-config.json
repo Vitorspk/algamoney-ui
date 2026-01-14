@@ -37,7 +37,7 @@
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "30m",
+        "maxAge": "5m",
         "timeout": "10s"
       }
     },
@@ -49,7 +49,7 @@
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "30m",
+        "maxAge": "5m",
         "timeout": "10s"
       }
     },
@@ -61,7 +61,7 @@
       "cacheConfig": {
         "strategy": "performance",
         "maxSize": 50,
-        "maxAge": "15m"
+        "maxAge": "5m"
       }
     }
   ]

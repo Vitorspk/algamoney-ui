@@ -6,6 +6,27 @@ import { DashboardService, LancamentoPorCategoria, LancamentoPorDia } from './da
 import { ErrorHandlerService } from './../error-handler.service';
 import { LogoutService } from './../../seguranca/logout.service';
 
+// Interfaces para Chart.js
+interface ChartDataset {
+  label?: string;
+  data: number[];
+  backgroundColor: string | string[];
+  hoverBackgroundColor?: string | string[];
+  borderColor?: string;
+  fill?: boolean;
+  tension?: number;
+}
+
+interface PieChartData {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+interface LineChartData {
+  labels: number[];
+  datasets: ChartDataset[];
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -18,8 +39,8 @@ export class DashboardComponent implements OnInit {
   despesaTotal = 0;
   saldo = 0;
 
-  pieChartData: any;
-  lineChartData: any;
+  pieChartData: PieChartData;
+  lineChartData: LineChartData;
 
   carregando = true;
   dataAtual = new Date();
