@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
@@ -33,7 +33,7 @@ interface LineChartData {
   styleUrls: ['./dashboard.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   receitaTotal = 0;
   despesaTotal = 0;
@@ -46,6 +46,8 @@ export class DashboardComponent implements OnInit {
   apiError = false;
   errorMessage = '';
   dataAtual = new Date();
+
+  private destroyed = false;
 
   constructor(
     private dashboardService: DashboardService,
@@ -63,6 +65,10 @@ export class DashboardComponent implements OnInit {
     this.carregarEstatisticas();
   }
 
+  ngOnDestroy() {
+    this.destroyed = true;
+  }
+
   carregarEstatisticas() {
     this.carregando = true;
     this.apiError = false;
@@ -73,6 +79,8 @@ export class DashboardComponent implements OnInit {
     Promise.all([
       this.dashboardService.lancamentosPorCategoria()
         .then(dados => {
+          if (this.destroyed) return; // Previne atualizações após destruição do componente
+
           // A API retorna um array com todos os lançamentos
           // Vamos calcular o total somando todos
           this.receitaTotal = this.calcularTotal(dados.filter((d: any) => d.tipo === 'RECEITA'));
@@ -84,15 +92,18 @@ export class DashboardComponent implements OnInit {
 
       this.dashboardService.lancamentosPorDia()
         .then(dados => {
+          if (this.destroyed) return; // Previne atualizações após destruição do componente
           this.configurarGraficoLinha(dados);
         })
     ])
       .catch(erro => {
+        if (this.destroyed) return; // Previne atualizações após destruição do componente
         this.apiError = true;
         this.errorMessage = 'Erro ao carregar dados do dashboard. Tente novamente mais tarde.';
         this.errorHandler.handle(erro);
       })
       .finally(() => {
+        if (this.destroyed) return; // Previne atualizações após destruição do componente
         this.carregando = false;
         this.cdr.markForCheck();
       });

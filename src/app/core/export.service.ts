@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 // Limites de segurança para prevenir DoS
-const MAX_EXPORT_ROWS = 10000; // Máximo 10k linhas
+const MAX_EXPORT_ROWS = 5000; // Máximo 5k linhas (reduzido para evitar consumo excessivo de memória ~25-50MB)
 const MAX_CELL_LENGTH = 32767; // Limite do Excel para células
 const MAX_COLUMN_WIDTH = 100; // Largura máxima de coluna
 
