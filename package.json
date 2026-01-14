@@ -23,6 +23,7 @@
     "@angular/router": "^18.2.0",
     "@angular/service-worker": "^18.2.0",
     "@auth0/angular-jwt": "^5.2.0",
+    "angular-oauth2-oidc": "^17.0.2",
     "jspdf": "^4.0.0",
     "jspdf-autotable": "^5.0.7",
     "ngx-currency": "^18.0.0",

@@ -6,12 +6,15 @@
 /**
  * Configuração de Desenvolvimento
  *
- * Para desenvolvimento local, você pode usar valores hardcoded.
- * Para produção, SEMPRE use variáveis de ambiente via window.__env
+ * ⚠️ SECURITY WARNING: Cliente secret mantido APENAS para desenvolvimento local
+ * NÃO usar em produção!
+ *
+ * Para produção, implemente BFF ou PKCE (veja MIGRATION-SECURITY.md)
  */
 export const environment = {
   production: false,
   apiUrl: (window as any).__env?.apiUrl || 'http://localhost:8080',
   oauthClientId: (window as any).__env?.oauthClientId || 'angular',
-  oauthClientSecret: (window as any).__env?.oauthClientSecret || '@ngu1@rM' // Apenas para DEV local
+  // ⚠️ APENAS DESENVOLVIMENTO LOCAL - Remover antes de produção
+  oauthClientSecret: (window as any).__env?.oauthClientSecret || '@ngu1@rM'
 };

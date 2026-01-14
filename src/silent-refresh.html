@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Silent Refresh</title>
+</head>
+<body>
+  <script>
+    // Silent refresh para renovação automática de tokens
+    // Este arquivo é carregado em um iframe oculto
+    parent.postMessage(location.hash || location.search, location.origin);
+  </script>
+</body>
+</html>
