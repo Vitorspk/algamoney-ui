@@ -1,0 +1,532 @@
+/* Modern Search & Table Design */
+
+/* Page Header - Outside of Form */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  border: none;
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+/* New Record Button in Header */
+::ng-deep .btn-new-record {
+  background: #10b981 !important;
+  border: none !important;
+  padding: 0.625rem 1.25rem !important;
+  font-weight: 500 !important;
+  font-size: 0.875rem !important;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2) !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+  color: white !important;
+}
+
+::ng-deep .btn-new-record:hover {
+  background: #059669 !important;
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+::ng-deep .btn-new-record .p-button-icon {
+  font-size: 0.875rem !important;
+}
+
+/* Logout Button - Top Right Corner */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: white;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-logout:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-logout i {
+  font-size: 1rem;
+}
+
+/* Search Form Card */
+form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Form Title */
+.form-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Input Fields */
+.ui-fluid input {
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Date Range */
+.ui-g-12 label:not([style]) {
+  margin-right: 0.75rem;
+}
+
+/* Search Button */
+button[type="submit"] {
+  background: #3b82f6 !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+  margin-top: 1.5rem !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+button[type="submit"]:hover {
+  background: #2563eb !important;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+/* Table Container */
+.ui-g > .ui-g-12 {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Table Styling */
+::ng-deep .p-datatable {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.05em !important;
+  padding: 1rem !important;
+  border: none !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr {
+  border-bottom: 1px solid #f3f4f6 !important;
+  transition: all 0.2s ease;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background: #f9fafb !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem !important;
+  border: none !important;
+}
+
+/* Action Buttons - Modern Minimalist Design */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  margin: 0 4px;
+}
+
+.btn-action i {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+/* Edit Button - Blue */
+.btn-edit {
+  color: #3b82f6;
+}
+
+.btn-edit:hover {
+  background: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.btn-edit:hover i {
+  transform: scale(1.1);
+}
+
+.btn-edit:active {
+  transform: translateY(0);
+  background: #dbeafe;
+}
+
+/* Delete Button - Red */
+.btn-delete {
+  color: #ef4444;
+}
+
+.btn-delete:hover {
+  background: #fef2f2;
+  transform: translateY(-2px);
+}
+
+.btn-delete:hover i {
+  transform: scale(1.1);
+}
+
+.btn-delete:active {
+  transform: translateY(0);
+  background: #fee2e2;
+}
+
+.btn-delete:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-delete:disabled:hover {
+  background: transparent;
+  transform: none;
+}
+
+/* Action Column Layout */
+.col-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Value Styling */
+::ng-deep .col-valor span {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Empty Message */
+::ng-deep .p-datatable .p-datatable-emptymessage td {
+  text-align: center;
+  padding: 3rem !important;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Pagination */
+::ng-deep .p-paginator {
+  border-radius: 0 0 8px 8px;
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0;
+}
+
+::ng-deep .p-paginator .p-paginator-current {
+  color: #64748b;
+  font-weight: 500;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  margin: 0 0.25rem;
+  transition: all 0.2s ease;
+  color: #64748b;
+}
+
+::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #3b82f6 !important;
+  border-color: transparent !important;
+  color: white !important;
+}
+
+/* Export Buttons */
+.export-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+::ng-deep .export-buttons .p-button {
+  padding: 0.625rem 1.25rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .export-buttons .p-button-success {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+::ng-deep .export-buttons .p-button-success:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+::ng-deep .export-buttons .p-button-danger {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+::ng-deep .export-buttons .p-button-danger:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+::ng-deep .export-buttons .p-button-info {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important;
+}
+
+::ng-deep .export-buttons .p-button-info:hover {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  /* Container com menos padding */
+  .container {
+    padding: 0.75rem !important;
+  }
+
+  /* Header mais compacto */
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Botão de novo registro */
+  ::ng-deep .btn-new-record {
+    width: 100%;
+    justify-content: center !important;
+  }
+
+  /* Botão de logout */
+  .btn-logout {
+    align-self: flex-end;
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .btn-logout span {
+    display: none; /* Esconde o texto "Sair" em mobile */
+  }
+
+  /* Formulário mais compacto */
+  form {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Campos de formulário maiores para toque */
+  form input,
+  form label {
+    font-size: 16px !important; /* Previne zoom no iOS */
+  }
+
+  ::ng-deep form .p-inputtext {
+    padding: 0.75rem !important;
+    font-size: 16px !important;
+  }
+
+  ::ng-deep form .p-calendar .p-inputtext {
+    padding: 0.75rem !important;
+    font-size: 16px !important;
+  }
+
+  ::ng-deep form .p-calendar-w-btn .p-inputtext {
+    padding-right: 2.5rem !important;
+  }
+
+  /* Botão de pesquisa maior */
+  button[type="submit"] {
+    width: 100%;
+    padding: 1rem 1.5rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* Tabela */
+  .ui-g > .ui-g-12 {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Botões de exportação em coluna */
+  .export-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  ::ng-deep .export-buttons .p-button {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.875rem 1rem !important;
+  }
+
+  /* Tabela responsiva */
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    font-size: 0.6875rem !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    font-size: 0.875rem !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  /* Botões de ação menores em mobile */
+  .btn-action {
+    width: 32px;
+    height: 32px;
+    margin: 0 2px;
+  }
+
+  .btn-action i {
+    font-size: 14px;
+  }
+
+  /* Valores menores */
+  ::ng-deep .col-valor span {
+    font-size: 0.875rem;
+  }
+
+  /* Paginação mais compacta */
+  ::ng-deep .p-paginator {
+    padding: 0.5rem !important;
+    font-size: 0.875rem;
+  }
+
+  ::ng-deep .p-paginator .p-paginator-pages .p-paginator-page {
+    min-width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+
+  /* Esconder colunas menos importantes em telas muito pequenas */
+  ::ng-deep .p-datatable .col-data:first-of-type {
+    display: none; /* Esconde a data de pagamento em mobile */
+  }
+}
+
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 576px) {
+  .container {
+    padding: 0.5rem !important;
+  }
+
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  form {
+    padding: 0.875rem;
+  }
+
+  .ui-g > .ui-g-12 {
+    padding: 0.5rem;
+  }
+
+  /* Tabela ainda mais compacta */
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.25rem !important;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.5rem 0.25rem !important;
+  }
+
+  /* Esconde label "até" no filtro de data */
+  form label[for="vencimento-fim"] {
+    display: none;
+  }
+}

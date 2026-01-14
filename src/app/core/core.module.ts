@@ -7,6 +7,7 @@ import localePt from '@angular/common/locales/pt';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { AuthService } from './../seguranca/auth.service';
 import { ErrorHandlerService } from './error-handler.service';
@@ -16,6 +17,7 @@ import { CategoriaService } from './../categorias/categoria.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { NaoAutorizadoComponent } from './nao-autorizado.component';
 import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 registerLocaleData(localePt);
 
@@ -26,11 +28,13 @@ registerLocaleData(localePt);
 
     ToastModule,
     ConfirmDialogModule,
+    TooltipModule,
   ],
   declarations: [
     NavbarComponent,
     PaginaNaoEncontradaComponent,
-    NaoAutorizadoComponent
+    NaoAutorizadoComponent,
+    DashboardComponent
   ],
   exports: [
     NavbarComponent,

@@ -1,32 +1,92 @@
 <div class="container">
-  <div class="ui-g">
+  <header class="page-header" role="banner">
+    <div class="header-left">
+      <h1>Pessoas</h1>
+      <a pButton label="Nova Pessoa" icon="pi pi-plus" routerLink="/pessoas/nova"
+         class="btn-new-record"
+         aria-label="Criar nova pessoa"></a>
+    </div>
+    <button type="button" class="btn-logout" (click)="logout()"
+            pTooltip="Sair" tooltipPosition="bottom"
+            aria-label="Sair do sistema">
+      <i class="pi pi-sign-out" aria-hidden="true"></i>
+      <span>Sair</span>
+    </button>
+  </header>
 
-    <form autocomplete="off" (ngSubmit)="pesquisar()">
+  <section class="ui-g" aria-label="Filtros de busca">
+
+    <form autocomplete="off" [formGroup]="formulario" (ngSubmit)="pesquisar()" role="search">
 
       <div class="ui-g-12">
-        <h1>Pessoas</h1>
+        <h2 class="form-title">Buscar Pessoas</h2>
       </div>
 
       <div class="ui-g-12 ui-fluid">
-        <label>Nome</label>
-        <input pInputText type="text" name="nome" [(ngModel)]="filtro.nome">
+        <label for="nome">Nome</label>
+        <input pInputText type="text" id="nome" formControlName="nome"
+               aria-label="Nome da pessoa"
+               [class.ng-invalid]="nomeInvalido"
+               [class.ng-dirty]="nomeInvalido">
+        <small class="p-error" *ngIf="nomeInvalido">
+          <span *ngIf="formulario.get('nome')?.hasError('minlength')">Nome deve ter no mínimo 3 caracteres</span>
+          <span *ngIf="formulario.get('nome')?.hasError('whitespace')">Nome não pode conter apenas espaços</span>
+          <span *ngIf="formulario.get('nome')?.hasError('onlyLetters')">Nome deve conter apenas letras</span>
+        </small>
       </div>
 
       <div class="ui-g-12">
-        <button pButton type="submit" label="Pesquisar"></button>
+        <button pButton type="submit"
+          [label]="carregando ? 'Pesquisando...' : 'Pesquisar'"
+          [icon]="carregando ? 'pi pi-spin pi-spinner' : 'pi pi-search'"
+          [disabled]="carregando || formulario.invalid"
+          [attr.aria-busy]="carregando"
+          aria-label="Buscar pessoas com os filtros informados"></button>
       </div>
 
     </form>
 
-  </div>
+  </section>
 
-  <div class="ui-g">
+  <section class="ui-g" aria-label="Resultados da busca">
     <div class="ui-g-12">
-      <p-table [value]="pessoas" [responsive]="true"
+      <div class="export-buttons" *ngIf="pessoas.length > 0">
+        <button pButton type="button" label="Exportar Excel"
+                icon="pi pi-file-excel"
+                class="p-button-success"
+                (click)="exportarExcel()"
+                pTooltip="Exportar para Excel"
+                tooltipPosition="top"
+                aria-label="Exportar pessoas para Excel"></button>
+        <button pButton type="button" label="Exportar PDF"
+                icon="pi pi-file-pdf"
+                class="p-button-danger"
+                (click)="exportarPDF()"
+                pTooltip="Exportar para PDF"
+                tooltipPosition="top"
+                aria-label="Exportar pessoas para PDF"></button>
+        <button pButton type="button" label="Exportar CSV"
+                icon="pi pi-file"
+                class="p-button-info"
+                (click)="exportarCSV()"
+                pTooltip="Exportar para CSV"
+                tooltipPosition="top"
+                aria-label="Exportar pessoas para CSV"></button>
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <p-table [value]="pessoas"
+        [responsive]="true"
+        [scrollable]="true"
+        scrollHeight="flex"
+        styleClass="p-datatable-striped p-datatable-gridlines"
         emptyMessage="Nenhuma pessoa encontrada"
         [paginator]="true" [rows]="filtro.itensPorPagina"
         [lazy]="true" [totalRecords]="totalRegistros"
+        [loading]="carregando"
         (onLazyLoad)="aoMudarPagina($event)"
+        [attr.aria-label]="'Tabela de pessoas com ' + totalRegistros + ' registros'"
+        dataKey="codigo"
         #tabela>
         <ng-template pTemplate="header">
           <tr>
@@ -46,26 +106,37 @@
               <a href="javascript:;"
                   [pTooltip]="pes.ativo ? 'Desativar' : 'Ativar'"
                   tooltipPosition="top"
-                  (click)="alternarStatus(pes)">
+                  (click)="alternarStatus(pes)"
+                  [attr.aria-label]="(pes.ativo ? 'Desativar' : 'Ativar') + ' pessoa ' + pes.nome"
+                  role="button"
+                  tabindex="0"
+                  (keydown.enter)="alternarStatus(pes)"
+                  (keydown.space)="alternarStatus(pes); $event.preventDefault()">
                 {{ pes.ativo ? 'Ativo' : 'Inativo' }}
               </a>
             </td>
             <td class="col-acoes">
-              <a pButton icon="fa-pencil"
-                pTooltip="Editar" tooltipPosition="top"
-                [routerLink]="['/pessoas', pes.codigo]"></a>
-              <button pButton icon="fa-trash"
-                pTooltip="Excluir" tooltipPosition="top"
-                (click)="confirmarExclusao(pes)"></button>
+              <button type="button"
+                class="btn-action btn-edit"
+                pTooltip="Editar"
+                tooltipPosition="top"
+                (click)="editar(pes.codigo)"
+                [attr.aria-label]="'Editar pessoa ' + pes.nome">
+                <i class="pi pi-pencil" aria-hidden="true"></i>
+              </button>
+              <button type="button"
+                class="btn-action btn-delete"
+                pTooltip="Excluir"
+                tooltipPosition="top"
+                (click)="confirmarExclusao(pes)"
+                [attr.aria-label]="'Excluir pessoa ' + pes.nome">
+                <i class="pi pi-trash" aria-hidden="true"></i>
+              </button>
             </td>
           </tr>
         </ng-template>
       </p-table>
     </div>
-
-    <div class="ui-g-12">
-      <a pButton label="Nova Pessoa" routerLink="/pessoas/nova"></a>
-    </div>
-  </div>
+  </section>
 
 </div>

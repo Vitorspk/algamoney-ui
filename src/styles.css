@@ -1,45 +1,462 @@
-/* You can add global styles to this file, and also import other style files */
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #404C51;
+/* Global Styles - Modern & Professional Design */
+
+:root {
+  /* Typography */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Modern Color Palette */
+  --primary-color: #2563eb;
+  --primary-dark: #1e40af;
+  --primary-light: #3b82f6;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+
+  /* Neutral Colors */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  color: var(--gray-800);
+  background-color: var(--gray-50);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links */
 a {
-  color: #337ab7;
+  color: var(--primary-color);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 a:hover, a:focus {
-  text-decoration: underline;
+  color: var(--primary-dark);
+  text-decoration: none;
 }
 
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 var(--spacing-md) 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--gray-900);
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.125rem; }
+
 label {
-  font-weight: bold;
+  font-weight: 500;
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-xs);
+  display: block;
+  font-size: 0.875rem;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding: var(--spacing-2xl) var(--spacing-lg);
+  }
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Table Columns */
+.col-valor {
+  width: 140px;
+  text-align: right;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.col-data {
+  width: 130px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.col-acoes {
+  width: 120px;
+  text-align: center;
+}
+
+/* PrimeNG Overrides for Modern Look */
+.p-component {
+  font-family: var(--font-family);
+}
+
+.p-button {
+  border-radius: var(--radius-md) !important;
+  font-weight: 500 !important;
+  padding: 0.625rem 1.25rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.p-button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.p-button-icon-only {
+  width: 2.5rem !important;
+  padding: 0.5rem !important;
+}
+
+.p-inputtext {
+  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--gray-300) !important;
+  padding: 0.625rem 0.875rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.p-inputtext:enabled:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+.p-datatable .p-datatable-header {
+  background: var(--gray-50) !important;
+  border: none !important;
+  padding: var(--spacing-lg) !important;
+}
+
+/* Tabela moderna com gradiente no header - Opção A: Gradiente roxo moderno */
+.p-datatable .p-datatable-thead > tr > th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border: none !important;
+  padding: 1rem !important;
+  border-bottom: none !important;
+}
+
+/* Opção B: Se preferir um visual mais sóbrio, comente o bloco acima e descomente este:
+.p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border: none !important;
+  padding: 1rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+*/
+
+.p-datatable .p-datatable-tbody > tr {
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: #f9fafb !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: #f3f4f6 !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem !important;
+  border: 1px solid #e5e7eb !important;
+  font-size: 0.9375rem !important;
+}
+
+.p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):hover {
+  background: #f3f4f6 !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.p-paginator {
+  background: white !important;
+  border: none !important;
+  padding: var(--spacing-lg) !important;
+  border-top: 1px solid var(--gray-200) !important;
+}
+
+.p-calendar .p-inputtext {
+  width: 100% !important;
+}
+
+.p-toast .p-toast-message {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-xl) !important;
 }
 
 .ui-dropdown-filter-container {
   width: 100%;
 }
 
-@media (min-width: 1200px) {
-  .container {
-    width: 1170px;
-    margin: 0 auto;
+/* Form Validation Styles */
+.ng-invalid.ng-dirty,
+.ng-invalid.ng-touched {
+  border-color: var(--danger-color) !important;
+  background-color: #fef2f2 !important;
+}
+
+.ng-valid.ng-dirty,
+.ng-valid.ng-touched {
+  border-color: var(--success-color) !important;
+}
+
+.p-error {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 500;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.col-valor {
-  width: 120px;
-  text-align: right;
+.p-inputtext.ng-invalid.ng-dirty,
+.p-inputtext.ng-invalid.ng-touched {
+  border-color: var(--danger-color) !important;
+  box-shadow: 0 0 0 1px var(--danger-color) !important;
 }
 
-.col-data {
-  width: 120px;
-  text-align: center;
+.p-inputtext.ng-valid.ng-dirty,
+.p-inputtext.ng-valid.ng-touched {
+  border-color: var(--success-color) !important;
+  box-shadow: 0 0 0 1px var(--success-color) !important;
 }
 
-.col-acoes {
-  width: 90px;
-  text-align: center;
+/* Calendar validation */
+.p-calendar.ng-invalid.ng-dirty .p-inputtext,
+.p-calendar.ng-invalid.ng-touched .p-inputtext {
+  border-color: var(--danger-color) !important;
+  box-shadow: 0 0 0 1px var(--danger-color) !important;
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  /* Prevent text size adjustment on orientation change */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  /* Smooth scrolling on mobile */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Better tap targets */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.2);
+  }
+
+  /* Prevent zoom on focus for iOS */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Container padding for mobile */
+  .container {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Make clickable areas larger */
+  ::ng-deep .p-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better spacing for touch */
+  ::ng-deep .p-inputtext {
+    padding: 0.75rem !important;
+    font-size: 16px !important;
+  }
+
+  /* Toast messages on top for mobile */
+  ::ng-deep .p-toast {
+    width: calc(100% - 1.5rem) !important;
+    max-width: 400px;
+    left: 50% !important;
+    transform: translateX(-50%);
+    top: 1rem !important;
+  }
+
+  /* Modal dialogs full width on small screens */
+  ::ng-deep .p-dialog {
+    width: 95% !important;
+    max-width: 500px;
+  }
+
+  /* Calendar popup full width */
+  ::ng-deep .p-calendar-w-btn .p-datepicker {
+    width: 100% !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+  /* Smaller font sizes */
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 1.125rem !important;
+  }
+
+  /* Container even smaller */
+  .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
+/* Landscape mode optimizations */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .page-header {
+    margin-bottom: 1rem !important;
+  }
+
+  form {
+    margin-bottom: 1rem !important;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button,
+  a,
+  ::ng-deep .p-button {
+    min-height: 44px;
+    padding: 0.75rem 1.25rem !important;
+  }
+
+  /* Remove hover effects on touch devices */
+  button:hover,
+  a:hover {
+    transform: none !important;
+  }
+
+  /* Active state instead */
+  button:active,
+  a:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
 }

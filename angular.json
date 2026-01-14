@@ -34,6 +34,16 @@
                 "glob": "favicon.ico",
                 "input": "src",
                 "output": "/"
+              },
+              {
+                "glob": "silent-refresh.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "callback.html",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": [
@@ -58,7 +68,16 @@
                   "maximumError": "10kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,
@@ -98,6 +117,16 @@
               },
               {
                 "glob": "favicon.ico",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "silent-refresh.html",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "callback.html",
                 "input": "src",
                 "output": "/"
               }

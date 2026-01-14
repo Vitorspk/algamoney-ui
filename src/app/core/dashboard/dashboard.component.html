@@ -1,0 +1,144 @@
+<div class="container">
+  <header class="page-header" role="banner">
+    <div class="header-left">
+      <h1>Dashboard</h1>
+    </div>
+    <button type="button" class="btn-logout" (click)="logout()"
+            pTooltip="Sair" tooltipPosition="bottom"
+            aria-label="Sair do sistema">
+      <i class="pi pi-sign-out" aria-hidden="true"></i>
+      <span>Sair</span>
+    </button>
+  </header>
+
+  <!-- Cards de Resumo -->
+  <section class="cards-container" role="region" aria-label="Indicadores financeiros">
+    <article class="card card-receita" role="article" aria-labelledby="receitas-label">
+      <div class="card-icon" aria-hidden="true">
+        <i class="pi pi-arrow-up"></i>
+      </div>
+      <div class="card-content">
+        <p class="card-label" id="receitas-label">Receitas</p>
+        <h2 class="card-value" aria-label="Total de receitas">{{ receitaTotal | currency:'BRL' }}</h2>
+      </div>
+    </article>
+
+    <article class="card card-despesa" role="article" aria-labelledby="despesas-label">
+      <div class="card-icon" aria-hidden="true">
+        <i class="pi pi-arrow-down"></i>
+      </div>
+      <div class="card-content">
+        <p class="card-label" id="despesas-label">Despesas</p>
+        <h2 class="card-value" aria-label="Total de despesas">{{ despesaTotal | currency:'BRL' }}</h2>
+      </div>
+    </article>
+
+    <article class="card card-saldo" role="article" aria-labelledby="saldo-label">
+      <div class="card-icon" aria-hidden="true">
+        <i class="pi pi-wallet"></i>
+      </div>
+      <div class="card-content">
+        <p class="card-label" id="saldo-label">Saldo</p>
+        <h2 class="card-value" [class.negative]="saldo < 0"
+            [attr.aria-label]="'Saldo ' + (saldo < 0 ? 'negativo' : 'positivo')">
+          {{ saldo | currency:'BRL' }}
+        </h2>
+      </div>
+    </article>
+  </section>
+
+  <!-- Resumo Visual -->
+  <div class="summary-section">
+    <div class="summary-card">
+      <h3>Resumo do Mês</h3>
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>Receitas</span>
+          <span class="value-green">{{ receitaTotal | currency:'BRL' }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill progress-receita"
+               [style.width.%]="receitaTotal > 0 ? 100 : 0"></div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>Despesas</span>
+          <span class="value-red">{{ despesaTotal | currency:'BRL' }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill progress-despesa"
+               [style.width.%]="despesaTotal > 0 && receitaTotal > 0 ? (despesaTotal / receitaTotal) * 100 : 0"></div>
+        </div>
+      </div>
+
+      <div class="summary-total">
+        <span>Saldo Final</span>
+        <span class="total-value" [class.negative]="saldo < 0">{{ saldo | currency:'BRL' }}</span>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>Informações</h3>
+      <div class="info-item">
+        <i class="pi pi-calendar"></i>
+        <div>
+          <p class="info-label">Período</p>
+          <p class="info-value">{{ dataAtual | date:'MMMM yyyy' }}</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="pi pi-chart-line"></i>
+        <div>
+          <p class="info-label">Taxa de Gastos</p>
+          <p class="info-value" [class.negative]="saldo < 0">
+            {{ receitaTotal > 0 ? ((despesaTotal / receitaTotal) * 100).toFixed(1) : 0 }}%
+          </p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="pi pi-info-circle"></i>
+        <div>
+          <p class="info-label">Status</p>
+          <p class="info-value" [class.positive]="saldo >= 0" [class.negative]="saldo < 0">
+            {{ saldo >= 0 ? 'Positivo' : 'Negativo' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações Rápidas -->
+  <nav class="quick-actions" role="navigation" aria-label="Ações rápidas">
+    <h3>Ações Rápidas</h3>
+    <div class="actions-grid">
+      <a routerLink="/lancamentos/novo" class="action-btn action-lancamento"
+         aria-label="Criar novo lançamento">
+        <i class="pi pi-plus-circle" aria-hidden="true"></i>
+        <span>Novo Lançamento</span>
+      </a>
+      <a routerLink="/pessoas/nova" class="action-btn action-pessoa"
+         aria-label="Criar nova pessoa">
+        <i class="pi pi-user-plus" aria-hidden="true"></i>
+        <span>Nova Pessoa</span>
+      </a>
+      <a routerLink="/lancamentos" class="action-btn action-lista"
+         aria-label="Ver lista de lançamentos">
+        <i class="pi pi-list" aria-hidden="true"></i>
+        <span>Ver Lançamentos</span>
+      </a>
+      <a routerLink="/pessoas" class="action-btn action-pessoas"
+         aria-label="Ver lista de pessoas">
+        <i class="pi pi-users" aria-hidden="true"></i>
+        <span>Ver Pessoas</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Loading State -->
+  <div *ngIf="carregando" class="loading-overlay" role="alert" aria-live="polite" aria-busy="true">
+    <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #3b82f6;" aria-hidden="true"></i>
+    <p>Carregando estatísticas...</p>
+  </div>
+</div>

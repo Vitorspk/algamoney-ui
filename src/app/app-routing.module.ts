@@ -3,12 +3,22 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { NaoAutorizadoComponent } from './core/nao-autorizado.component';
 import { PaginaNaoEncontradaComponent } from './core/pagina-nao-encontrada.component';
-import { PessoasPesquisaComponent } from './pessoas/pessoas-pesquisa/pessoas-pesquisa.component';
-import { LancamentoCadastroComponent } from './lancamentos/lancamento-cadastro/lancamento-cadastro.component';
-import { LancamentosPesquisaComponent } from './lancamentos/lancamentos-pesquisa/lancamentos-pesquisa.component';
+import { DashboardComponent } from './core/dashboard/dashboard.component';
+import { CustomPreloadingService } from './core/custom-preloading.service';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'lancamentos', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardComponent },
+  {
+    path: 'lancamentos',
+    loadChildren: () => import('./lancamentos/lancamentos.module').then(m => m.LancamentosModule),
+    data: { preload: true, delay: 500 }
+  },
+  {
+    path: 'pessoas',
+    loadChildren: () => import('./pessoas/pessoas.module').then(m => m.PessoasModule),
+    data: { preload: true, delay: 1000 }
+  },
   { path: 'nao-autorizado', component: NaoAutorizadoComponent },
   { path: 'pagina-nao-encontrada', component: PaginaNaoEncontradaComponent },
   { path: '**', redirectTo: 'pagina-nao-encontrada' }
@@ -16,7 +26,10 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: CustomPreloadingService,
+      enableTracing: false
+    })
   ],
   exports: [RouterModule]
 })

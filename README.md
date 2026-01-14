@@ -69,15 +69,50 @@ npm install --legacy-peer-deps
 
 ### Environment Configuration
 
-The application expects an API backend. Configure the API URL in:
+The application requires environment variables for configuration.
+
+#### Required Variables
 
 ```typescript
-// src/environments/environment.ts
+// src/environments/environment.ts (Development)
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080'
+  apiUrl: 'http://localhost:8080',
+  oauthClientId: 'angular',
+  oauthClientSecret: '@ngu1@rM'  // Desenvolvimento apenas
 };
 ```
+
+```typescript
+// src/environments/environment.prod.ts (Production)
+export const environment = {
+  production: true,
+  apiUrl: 'https://your-api.com',  // Configure com sua API de produção
+  oauthClientId: 'angular',
+  oauthClientSecret: process.env['OAUTH_CLIENT_SECRET'] || ''  // Use variáveis de ambiente
+};
+```
+
+#### Security Notice ⚠️
+
+**IMPORTANTE**: Em produção, NUNCA commite credenciais no código-fonte. Use variáveis de ambiente:
+
+1. Configure as variáveis de ambiente no seu servidor/container:
+   ```bash
+   export API_URL=https://your-api.com
+   export OAUTH_CLIENT_ID=angular
+   export OAUTH_CLIENT_SECRET=your-secret-here
+   ```
+
+2. Durante o build, substitua os valores usando scripts de build ou ferramentas como dotenv
+
+3. Para Docker, use `docker-compose.yml` ou secrets do Kubernetes:
+   ```yaml
+   environment:
+     - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET}
+   ```
+
+4. **Recomendado**: Após configurar variáveis de ambiente, rotacione as credenciais atuais
 
 ## Development
 

@@ -1,42 +1,109 @@
 <div class="container">
-  <div class="ui-g">
+  <header class="page-header" role="banner">
+    <div class="header-left">
+      <h1>Lançamentos</h1>
+      <a pButton label="Novo Lançamento" icon="pi pi-plus" routerLink="/lancamentos/novo"
+         class="btn-new-record"
+         aria-label="Criar novo lançamento"></a>
+    </div>
+    <button type="button" class="btn-logout" (click)="logout()"
+            pTooltip="Sair" tooltipPosition="bottom"
+            aria-label="Sair do sistema">
+      <i class="pi pi-sign-out" aria-hidden="true"></i>
+      <span>Sair</span>
+    </button>
+  </header>
 
-    <form autocomplete="off" (ngSubmit)="pesquisar()">
+  <section class="ui-g" aria-label="Filtros de busca">
+
+    <form autocomplete="off" [formGroup]="formulario" (ngSubmit)="pesquisar()" role="search">
 
       <div class="ui-g-12">
-        <h1>Lançamentos</h1>
+        <h2 class="form-title">Buscar Lançamentos</h2>
       </div>
 
       <div class="ui-g-12 ui-fluid">
-        <label>Descrição</label>
-        <input pInputText type="text" name="descricao"
-          [(ngModel)]="filtro.descricao">
+        <label for="descricao">Descrição</label>
+        <input pInputText type="text" id="descricao" formControlName="descricao"
+          aria-label="Descrição do lançamento"
+          [class.ng-invalid]="descricaoInvalida"
+          [class.ng-dirty]="descricaoInvalida">
+        <small class="p-error" *ngIf="descricaoInvalida">
+          <span *ngIf="formulario.get('descricao')?.hasError('minlength')">Descrição deve ter no mínimo 3 caracteres</span>
+          <span *ngIf="formulario.get('descricao')?.hasError('whitespace')">Descrição não pode conter apenas espaços</span>
+        </small>
       </div>
 
       <div class="ui-g-12">
-        <label style="display: block">Vencimento</label>
+        <label style="display: block" id="vencimento-label">Vencimento</label>
         <p-calendar dateFormat="dd/mm/yy" [inputStyle]="{ width: '95px' }"
-          name="vencimentoInicio" [(ngModel)]="filtro.dataVencimentoInicio"></p-calendar>
+          formControlName="dataVencimentoInicio"
+          inputId="vencimento-inicio"
+          aria-labelledby="vencimento-label"
+          [attr.aria-label]="'Data de vencimento inicial'"></p-calendar>
 
-        <label>até</label>
+        <label for="vencimento-fim">até</label>
         <p-calendar dateFormat="dd/mm/yy" [inputStyle]="{ width: '95px' }"
-          name="vencimentoFim" [(ngModel)]="filtro.dataVencimentoFim"></p-calendar>
+          formControlName="dataVencimentoFim"
+          inputId="vencimento-fim"
+          [attr.aria-label]="'Data de vencimento final'"></p-calendar>
+
+        <small class="p-error" style="display: block; margin-top: 0.5rem;" *ngIf="dateRangeInvalido">
+          A data inicial deve ser anterior à data final
+        </small>
       </div>
 
       <div class="ui-g-12">
-        <button pButton type="submit" label="Pesquisar"></button>
+        <button pButton type="submit"
+          [label]="carregando ? 'Pesquisando...' : 'Pesquisar'"
+          [icon]="carregando ? 'pi pi-spin pi-spinner' : 'pi pi-search'"
+          [disabled]="carregando || formulario.invalid"
+          [attr.aria-busy]="carregando"
+          aria-label="Buscar lançamentos com os filtros informados"></button>
       </div>
 
     </form>
-  </div>
+  </section>
 
-  <div class="ui-g">
+  <section class="ui-g" aria-label="Resultados da busca">
     <div class="ui-g-12">
-      <p-table [value]="lancamentos" [responsive]="true"
+      <div class="export-buttons" *ngIf="lancamentos.length > 0">
+        <button pButton type="button" label="Exportar Excel"
+                icon="pi pi-file-excel"
+                class="p-button-success"
+                (click)="exportarExcel()"
+                pTooltip="Exportar para Excel"
+                tooltipPosition="top"
+                aria-label="Exportar lançamentos para Excel"></button>
+        <button pButton type="button" label="Exportar PDF"
+                icon="pi pi-file-pdf"
+                class="p-button-danger"
+                (click)="exportarPDF()"
+                pTooltip="Exportar para PDF"
+                tooltipPosition="top"
+                aria-label="Exportar lançamentos para PDF"></button>
+        <button pButton type="button" label="Exportar CSV"
+                icon="pi pi-file"
+                class="p-button-info"
+                (click)="exportarCSV()"
+                pTooltip="Exportar para CSV"
+                tooltipPosition="top"
+                aria-label="Exportar lançamentos para CSV"></button>
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <p-table [value]="lancamentos"
+          [responsive]="true"
+          [scrollable]="true"
+          scrollHeight="flex"
+          styleClass="p-datatable-striped p-datatable-gridlines"
           emptyMessage="Nenhum lançamento encontrado"
           [paginator]="true" [rows]="filtro.itensPorPagina"
           [lazy]="true" [totalRecords]="totalRegistros"
+          [loading]="carregando"
           (onLazyLoad)="aoMudarPagina($event)"
+          [attr.aria-label]="'Tabela de lançamentos com ' + totalRegistros + ' registros'"
+          dataKey="codigo"
           #tabela>
         <ng-template pTemplate="header">
           <tr>
@@ -58,23 +125,27 @@
               <span [style.color]="lanc.tipo === 'DESPESA' ? 'red' : 'blue'">{{ lanc.valor | number:'1.2-2' }}</span>
             </td>
             <td class="col-acoes">
-              <a pButton icon="fa-pencil" pTooltip="Editar"
+              <button type="button"
+                class="btn-action btn-edit"
+                pTooltip="Editar"
                 tooltipPosition="top"
-                [routerLink]="['/lancamentos', lanc.codigo]"></a>
-              <button pButton icon="fa-trash"
-                pTooltip="Excluir" tooltipPosition="top"
+                (click)="editar(lanc.codigo)"
+                [attr.aria-label]="'Editar lançamento ' + lanc.descricao">
+                <i class="pi pi-pencil" aria-hidden="true"></i>
+              </button>
+              <button type="button"
+                class="btn-action btn-delete"
+                pTooltip="Excluir"
+                tooltipPosition="top"
                 (click)="confirmarExclusao(lanc)"
-                [disabled]="!auth.temPermissao('ROLE_REMOVER_LANCAMENTO')"></button>
-            </td>
-          </tr>
+                [disabled]="!auth.temPermissao('ROLE_REMOVER_LANCAMENTO')"
+                [attr.aria-label]="'Excluir lançamento ' + lanc.descricao">
+                <i class="pi pi-trash" aria-hidden="true"></i>
+              </button>
+            </td>          </tr>
         </ng-template>
       </p-table>
     </div>
-
-    <div class="ui-g-12">
-      <a pButton label="Novo Lançamento" routerLink="/lancamentos/novo"></a>
-    </div>
-
-  </div>
+  </section>
 
 </div>

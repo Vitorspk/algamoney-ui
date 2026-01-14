@@ -19,9 +19,23 @@ export class LogoutService {
   logout() {
     return firstValueFrom(
       this.http.delete(this.tokensRenokeUrl, { withCredentials: true })
-    ).then(() => {
-      this.auth.limparAccessToken();
-    });
+    )
+      .then(() => {
+        this.limparSessaoCompleta();
+      })
+      .catch(() => {
+        // Mesmo que a API falhe, limpa a sessão local
+        this.limparSessaoCompleta();
+      });
+  }
+
+  private limparSessaoCompleta() {
+    // Limpa o token do localStorage
+    this.auth.limparAccessToken();
+    // Limpa o ID da sessão
+    sessionStorage.removeItem('app_session_id');
+    // Limpa qualquer outro dado de sessão
+    sessionStorage.clear();
   }
 
 }
