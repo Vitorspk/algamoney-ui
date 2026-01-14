@@ -3,6 +3,10 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { filter, map } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 
+// Constantes de configuração
+const UPDATE_CHECK_INTERVAL = 6 * 60 * 60 * 1000; // 6 horas
+const DUE_DATE_WARNING_DAYS = 3; // Dias de antecedência para notificar vencimento
+
 /**
  * Serviço para gerenciar PWA features:
  * - Notificações de atualização
@@ -68,7 +72,7 @@ export class PwaNotificationService implements OnDestroy {
         this.notifyUpdateAvailable();
       });
 
-    // Verifica atualizações a cada 6 horas com error handling
+    // Verifica atualizações periodicamente com error handling
     if (this.swUpdate.isEnabled) {
       this.updateCheckInterval = setInterval(() => {
         this.swUpdate.checkForUpdate()
@@ -78,7 +82,7 @@ export class PwaNotificationService implements OnDestroy {
           .catch(err => {
             console.error('Erro ao verificar atualizações:', err);
           });
-      }, 6 * 60 * 60 * 1000);
+      }, UPDATE_CHECK_INTERVAL);
     }
   }
 
@@ -203,7 +207,7 @@ export class PwaNotificationService implements OnDestroy {
   notifyUpcomingDueDate(descricao: string, dataVencimento: Date): void {
     const daysUntilDue = Math.ceil((dataVencimento.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
 
-    if (daysUntilDue <= 3 && daysUntilDue >= 0) {
+    if (daysUntilDue <= DUE_DATE_WARNING_DAYS && daysUntilDue >= 0) {
       this.sendNotification('Lançamento Próximo do Vencimento', {
         body: `${descricao} vence em ${daysUntilDue} dia(s)`,
         tag: 'due-date-reminder',

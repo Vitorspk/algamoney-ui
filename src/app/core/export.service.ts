@@ -79,8 +79,8 @@ export class ExportService {
         link.click();
         document.body.removeChild(link);
 
-        // Cleanup: Revoga o objeto URL após o download
-        setTimeout(() => URL.revokeObjectURL(url), 100);
+        // Cleanup: Revoga o objeto URL após o download (1s para garantir tempo suficiente)
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       } else {
         throw new Error('Seu navegador não suporta download de arquivos');
       }
