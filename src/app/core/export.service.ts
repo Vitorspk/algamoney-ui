@@ -34,14 +34,25 @@ export class ExportService {
     }
 
     try {
-      // Trunca células muito grandes para prevenir DoS
+      // Sanitiza e formata dados antes da exportação
       const sanitizedData = data.map(row => {
         const sanitizedRow: any = {};
         Object.keys(row).forEach(key => {
           const value = row[key];
-          if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
+          // Formata datas
+          if (value instanceof Date) {
+            sanitizedRow[key] = this.formatDate(value);
+          }
+          // Mantém números
+          else if (typeof value === 'number') {
+            sanitizedRow[key] = value;
+          }
+          // Trunca strings muito grandes
+          else if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
             sanitizedRow[key] = value.substring(0, MAX_CELL_LENGTH) + '...';
-          } else {
+          }
+          // Outros valores
+          else {
             sanitizedRow[key] = value;
           }
         });
@@ -94,9 +105,20 @@ export class ExportService {
         const sanitizedRow: any = {};
         Object.keys(row).forEach(key => {
           const value = row[key];
-          if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
+          // Formata datas
+          if (value instanceof Date) {
+            sanitizedRow[key] = this.formatDate(value);
+          }
+          // Mantém números
+          else if (typeof value === 'number') {
+            sanitizedRow[key] = value;
+          }
+          // Trunca strings muito grandes
+          else if (typeof value === 'string' && value.length > MAX_CELL_LENGTH) {
             sanitizedRow[key] = value.substring(0, MAX_CELL_LENGTH) + '...';
-          } else {
+          }
+          // Outros valores
+          else {
             sanitizedRow[key] = value;
           }
         });

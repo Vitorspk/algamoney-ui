@@ -54,7 +54,6 @@ export class PwaNotificationService implements OnDestroy {
    */
   private checkForUpdates(): void {
     if (!this.swUpdate.isEnabled) {
-      console.log('Service Worker não está habilitado');
       return;
     }
 
@@ -76,9 +75,6 @@ export class PwaNotificationService implements OnDestroy {
     if (this.swUpdate.isEnabled) {
       this.updateCheckInterval = setInterval(() => {
         this.swUpdate.checkForUpdate()
-          .then(() => {
-            console.log('Verificação de atualização concluída');
-          })
           .catch(err => {
             console.error('Erro ao verificar atualizações:', err);
           });
@@ -162,7 +158,6 @@ export class PwaNotificationService implements OnDestroy {
    */
   async requestNotificationPermission(): Promise<NotificationPermission> {
     if (!('Notification' in window)) {
-      console.log('Este navegador não suporta notificações');
       return 'denied';
     }
 
@@ -198,6 +193,14 @@ export class PwaNotificationService implements OnDestroy {
       } else {
         new Notification(title, notificationOptions);
       }
+    } else {
+      // Fallback: usa MessageService quando notificações não estão disponíveis ou foram negadas
+      this.messageService.add({
+        severity: 'info',
+        summary: title,
+        detail: options?.body || '',
+        life: 5000
+      });
     }
   }
 

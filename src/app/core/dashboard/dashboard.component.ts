@@ -43,6 +43,8 @@ export class DashboardComponent implements OnInit {
   lineChartData: LineChartData;
 
   carregando = true;
+  apiError = false;
+  errorMessage = '';
   dataAtual = new Date();
 
   constructor(
@@ -63,6 +65,8 @@ export class DashboardComponent implements OnInit {
 
   carregarEstatisticas() {
     this.carregando = true;
+    this.apiError = false;
+    this.errorMessage = '';
     this.cdr.markForCheck();
 
     // Carrega ambas as chamadas em paralelo e só remove loading quando ambas terminarem
@@ -76,19 +80,18 @@ export class DashboardComponent implements OnInit {
           this.saldo = this.receitaTotal - this.despesaTotal;
 
           this.configurarGraficoPizza(dados);
-        })
-        .catch(erro => {
-          this.errorHandler.handle(erro);
         }),
 
       this.dashboardService.lancamentosPorDia()
         .then(dados => {
           this.configurarGraficoLinha(dados);
         })
-        .catch(erro => {
-          this.errorHandler.handle(erro);
-        })
     ])
+      .catch(erro => {
+        this.apiError = true;
+        this.errorMessage = 'Erro ao carregar dados do dashboard. Tente novamente mais tarde.';
+        this.errorHandler.handle(erro);
+      })
       .finally(() => {
         this.carregando = false;
         this.cdr.markForCheck();

@@ -73,8 +73,6 @@ export class AuthService {
       .then(response => {
         this.armazenarToken(response.access_token);
 
-        console.log('Novo access token criado!');
-
         return Promise.resolve();
       })
       .catch(error => {
