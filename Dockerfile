@@ -29,9 +29,10 @@ COPY .docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 # Copy built artifacts from build stage
 COPY --from=build /app/dist/algamoney-ui/browser /usr/share/nginx/html
 
-# Copy entrypoint script
+# Copy scripts
 COPY .docker/scripts/entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+COPY .docker/scripts/inject-env.sh /docker-scripts/inject-env.sh
+RUN chmod +x /docker-entrypoint.sh && chmod +x /docker-scripts/inject-env.sh
 
 # Expose port
 EXPOSE 80
